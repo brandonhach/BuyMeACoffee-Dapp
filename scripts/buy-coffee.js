@@ -22,9 +22,7 @@ async function printMemos(memos) {
 		const tipper = memo.name;
 		const tipperAddress = memo.from;
 		const message = memo.message;
-		console.log(
-			`At ${timestamp}, ${tipper}, ${tipperAddress} said: "${message}"`
-		);
+		console.log(`At ${timestamp}, ${tipper}, ${tipperAddress} said: "${message}"`);
 	}
 }
 
@@ -36,22 +34,30 @@ async function main() {
 	const buyMeACoffee = await BuyMeACoffee.deploy();
 	await buyMeACoffee.deployed();
 	console.log("BuyMeACoffee deployed to ", buyMeACoffee.address);
-	// Deploy contracts.
+	// Check balances before the coffee purchase.
 	const addresses = [owner.address, tipper.address, buyMeACoffee.address];
 	console.log("== start ==");
 	await printBalances(addresses);
 
-	// Check balances before the coffee purchase.
-
 	// Buy the owner a few coffees.
+	const tip = { value: hre.ethers.utils.parseEther("1") };
+	await buyMeACoffee.connect(tipper).buyCoffee("Shrek", "Thanks.", tip);
+	await buyMeACoffee.connect(tipper2).buyCoffee("Doug Dimmadome", "AWGH!", tip);
+	await buyMeACoffee.connect(tipper3).buyCoffee("Chad", "face", tip);
 
 	// Check balances after coffee purchase.
+	console.log("== bought coffee ==");
+	await printBalances(addresses);
 
 	// Withdraw funds.
-
+	console.log("== withdraw tips == ");
+	await buyMeACoffee.connect(owner).withdrawTips();
 	// Check balance after withdraw.
-
+	await printBalances(addresses);
 	// read all the memos left for the owner
+	console.log("== memos ==");
+	const memos = await buyMeACoffee.getMemos();
+	printMemos(memos);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

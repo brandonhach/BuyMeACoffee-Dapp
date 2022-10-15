@@ -4,6 +4,9 @@ pragma solidity ^0.8.9;
 // Uncomment this line to use console.log
 // import "hardhat/console.sol";
 
+//This project has been deployed to Goerli testnet
+//0x8574D4F5fB95BD6fa2522c32A1A646902800B47F
+
 contract BuyMeACoffee {
     // Event to emit when a memo is created
     event NewMemo(
@@ -56,7 +59,7 @@ contract BuyMeACoffee {
      * @dev send the entire balance stored in this contract to the owner
      */
 
-    function widthDrawTips() public {
+    function withdrawTips() public {
         //Strictly send to owner address no matter what
         require(owner.send(address(this).balance));
     }
